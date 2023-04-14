@@ -37,7 +37,11 @@ func main() {
 	excelFileName := "Sheet1"
 	savePath, _ := os.Getwd()
 	var wg sync.WaitGroup
-
+	var split = "/"
+	// 如果第二个启动参数是 1 则代表是在window环境运行 其它参数则是在linux上运行
+	if os.Args[2] == "1" {
+		split = "\\"
+	}
 	f, err := excelize.OpenFile(excelFilePath)
 	if err != nil {
 		log.Println(err)
@@ -57,7 +61,7 @@ func main() {
 	str := strs[len(strs)-1]
 	//去除后缀.xlsx,最后名称是 搜狗图片搜索 - 泥地
 	str = str[:len(str)-5]
-	savePath = savePath + "\\" + str
+	savePath = savePath + split + str
 	err = os.Mkdir(savePath, os.ModePerm)
 	if err != nil {
 		panic(err)
@@ -81,7 +85,7 @@ func main() {
 		row := rows[i]
 		//每5000个创建一个文件夹
 		if i%FileMax == 1 {
-			subSavePath = savePath + "\\" + "file" + strconv.Itoa(i/FileMax)
+			subSavePath = savePath + split + "file" + strconv.Itoa(i/FileMax)
 			fmt.Println(subSavePath)
 			err = os.Mkdir(subSavePath, os.ModePerm)
 			if err != nil {
