@@ -17,7 +17,7 @@ import (
 
 const (
 	FileMax = 5000
-	MaxGet  = 500
+	MaxGet  = 400
 )
 
 var channel chan struct{} = make(chan struct{}, MaxGet)
@@ -62,10 +62,13 @@ func main() {
 	//去除后缀.xlsx,最后名称是 搜狗图片搜索 - 泥地
 	str = str[:len(str)-5]
 	savePath = savePath + split + str
-	err = os.Mkdir(savePath, os.ModePerm)
-	if err != nil {
-		panic(err)
-		return
+	_, err = os.Stat(savePath)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(savePath, os.ModePerm)
+		if err != nil {
+			panic(err)
+			return
+		}
 	}
 	log.Println("程序执行:", time.Now())
 	//第一行为标题,确定URL所在的列
@@ -85,7 +88,7 @@ func main() {
 		row := rows[i]
 		//每5000个创建一个文件夹
 		if i%FileMax == 1 {
-			subSavePath = savePath + split + "file" + strconv.Itoa(i/FileMax)
+			subSavePath = savePath + split + time.Now().Format("20060102150405") + "_file" + strconv.Itoa(i/FileMax)
 			fmt.Println(subSavePath)
 			err = os.Mkdir(subSavePath, os.ModePerm)
 			if err != nil {
