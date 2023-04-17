@@ -96,7 +96,7 @@ func main() {
 				return
 			}
 		}
-		if len(row) < 1 || !strings.HasPrefix(row[0], "https://") {
+		if len(row) < 1 || !strings.HasPrefix(row[index], "https://") {
 			continue
 		}
 		//wg 并发执行
